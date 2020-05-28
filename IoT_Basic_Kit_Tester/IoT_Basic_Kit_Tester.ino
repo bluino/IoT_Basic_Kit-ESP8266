@@ -1,4 +1,3 @@
-
 #include <Adafruit_NeoPixel.h>
 #include <Wire.h>
 #include "SSD1306Wire.h"
@@ -55,9 +54,11 @@ void loop() {
     Relay();
     Blink();
     Buzzer();
-    Potensiometer();
     Fade();
+    Potensiometer();
+    Button();
     dhtRead();
+    
 }
 
 
@@ -89,7 +90,14 @@ void Fade() {
 }
 
 void Potensiometer(){
-  int count = 50;
+  int count = 10000;
+  
+  display.clear();
+  display.setTextAlignment(TEXT_ALIGN_LEFT);
+  display.setFont(ArialMT_Plain_10);
+  display.drawString(0, 0, "Turn Potentiometer knob.");
+  display.display();
+  
     while(count > 0 ) {
     potPosition = analogRead(A0);
     Serial.println(potPosition);
@@ -99,7 +107,7 @@ void Potensiometer(){
   
     digitalWrite(buttonPin2, LOW);
     delay(potPosition);
-    count = count -1;
+    count = count - (potPosition*2);
   }
 }
 
@@ -132,7 +140,7 @@ void Buzzer() {
   play('C', 4);       //day
   play('D', 4);       //to
   play('C', 6);       //you
-  delay(3000);
+  noTone(buzzerPin);
 }
 
 void play( char note, int beats) {
@@ -150,9 +158,10 @@ void play( char note, int beats) {
     }
   }
 
+
   tone(buzzerPin, currentFrequency, beats * beatLength);   
   delay(beats* beatLength);
-  delay(50);
+  delay(50); 
 }
 
 
@@ -221,12 +230,35 @@ void NeoPixel() {
   pixels.show();
   delay(delayVal);
 }
+void Button() {
+  int count = 1000;
+ 
+  pinMode(buttonPin1, INPUT_PULLUP);  //if pin use as Button input
+  pinMode(buttonPin2, INPUT_PULLUP);  //if pin use as Button input
+  
+  display.clear();
+  display.setTextAlignment(TEXT_ALIGN_LEFT);
+  display.setFont(ArialMT_Plain_10);
+  display.drawString(0, 20, "Press 2 Buttons bellow.");
+  display.display();
+      
+  while(count > 0 ) {
+    delay(10);
+    if(digitalRead(buttonPin1)==LOW) digitalWrite(ledPin,HIGH); else digitalWrite(ledPin,LOW);
+    if(digitalRead(buttonPin2)==LOW) digitalWrite(relayPin,HIGH); else digitalWrite(relayPin,LOW);
+    count = count -1;
+  }   
+  digitalWrite(ledPin,LOW);
+  digitalWrite(relayPin,LOW);
+  pinMode(buttonPin1, OUTPUT);  //if pin use as LED output
+  pinMode(buttonPin2, OUTPUT);  //if pin use as LED output
+}
 
 void dhtRead() {
-  int count = 10;
+  int count = 25;
  
   while(count > 0 ) {
-    delay(2000);
+    delay(1000);
     //read temperature and humidity
     float t = dht.readTemperature();
     float h = dht.readHumidity();
