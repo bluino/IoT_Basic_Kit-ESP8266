@@ -1,3 +1,9 @@
+/* library OLED: https://github.com/ThingPulse/esp8266-oled-ssd1306
+ * library RGB LED NeoPixel: https://github.com/adafruit/Adafruit_NeoPixel
+ * library Adafruit Sensor: https://github.com/adafruit/Adafruit_Sensor
+ * library DHT sensor: https://github.com/adafruit/DHT-sensor-library
+*/
+
 #include <Adafruit_NeoPixel.h>
 #include <Wire.h>
 #include "SSD1306Wire.h"
